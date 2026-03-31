@@ -1,0 +1,79 @@
+<div class="p-6 max-w-3xl mx-auto">
+  <div class="mb-6 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Register New Asset</h1>
+      <p class="text-gray-500">Add new hardware or software to the company inventory.</p>
+    </div>
+    <a routerLink="/admin/assets" class="text-blue-600 hover:text-blue-800 font-medium text-sm">
+      &larr; Back to Assets
+    </a>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-md border border-gray-200 p-8">
+    <form [formGroup]="assetForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Asset Name / Model</label>
+        <input 
+          type="text" 
+          formControlName="name" 
+          placeholder="e.g. Dell Latitude 5420"
+          class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+          [class.border-red-500]="assetForm.get('name')?.invalid && assetForm.get('name')?.touched"
+        >
+        <p *ngIf="assetForm.get('name')?.invalid && assetForm.get('name')?.touched" class="text-red-500 text-xs mt-1">
+          Valid asset name is required.
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">Serial Number</label>
+        <input 
+          type="text" 
+          formControlName="serialNumber" 
+          placeholder="e.g. SN-DELL-8821"
+          class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+          [class.border-red-500]="assetForm.get('serialNumber')?.invalid && assetForm.get('serialNumber')?.touched"
+        >
+        <p *ngIf="assetForm.get('serialNumber')?.invalid && assetForm.get('serialNumber')?.touched" class="text-red-500 text-xs mt-1">
+          Serial number is required.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+          <select formControlName="categoryId">
+  <option *ngFor="let cat of categories" 
+          [value]="cat.id" 
+          [disabled]="!cat.isLeafNode"> {{ cat.visualTree }}
+  </option>
+</select>
+          <p *ngIf="categories.length === 0" class="text-yellow-600 text-xs mt-1">Loading categories...</p>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Initial Status</label>
+          <select 
+            formControlName="status" 
+            class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            <option value="Available">Available</option>
+            <option value="InRepair">In Repair</option>
+            <option value="Retired">Retired</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-gray-100 flex justify-end">
+        <button 
+          type="submit" 
+          [disabled]="isSubmitting"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2">
+          <span *ngIf="isSubmitting" class="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+          {{ isSubmitting ? 'Saving...' : 'Register Asset' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

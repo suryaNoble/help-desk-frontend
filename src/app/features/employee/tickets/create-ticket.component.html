@@ -1,0 +1,131 @@
+<div class="p-6 max-w-3xl mx-auto">
+  
+  <div class="mb-6 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">Raise a Support Ticket</h1>
+      <p class="text-gray-500 text-sm mt-1">Provide details about your issue so our IT team can help.</p>
+    </div>
+    <a routerLink="/employee/dashboard" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition">
+      &larr; Cancel
+    </a>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    
+    <div class="h-1 w-full" [ngClass]="ticketForm.valid ? 'bg-green-500' : 'bg-gray-200'"></div>
+
+    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()" class="p-8 space-y-6">
+      
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Issue Summary (Title)</label>
+        <input 
+          formControlName="title" 
+          placeholder="e.g. Cannot connect to office VPN"
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition"
+          [class.border-red-500]="ticketForm.get('title')?.invalid && ticketForm.get('title')?.touched"
+        >
+        <p *ngIf="ticketForm.get('title')?.invalid && ticketForm.get('title')?.touched" class="text-red-500 text-xs mt-1">
+          A descriptive title is required (min 5 characters).
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Issue Category</label>
+          <select 
+            formControlName="category" 
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition">
+            <option value="Software">Software Issue</option>
+            <option value="Hardware">Hardware Issue</option>
+            <option value="Access">Access / Permission Request</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Priority Level</label>
+          <select 
+            formControlName="priority" 
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition">
+            <option value="Low">Low - Not blocking work</option>
+            <option value="Medium">Medium - Standard issue</option>
+            <option value="High">High - Blocking my work</option>
+            <option value="Urgent">Urgent - System wide failure</option>
+          </select>
+        </div>
+      </div>
+
+      <div *ngIf="ticketForm.get('assetId')" class="p-4 bg-blue-50 rounded-lg border border-blue-100 animate-fade-in-down">
+        <label class="block text-sm font-bold text-blue-800 mb-1">Hardware Asset ID</label>
+        <p class="text-xs text-blue-600 mb-3">Please provide the ID of the affected device.</p>
+        
+        <div class="relative">
+          <input 
+            formControlName="assetId" 
+            placeholder="e.g. 1"
+            class="w-full px-4 py-2 border border-blue-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+            [class.border-red-500]="ticketForm.get('assetId')?.invalid && ticketForm.get('assetId')?.touched"
+          >
+          <div *ngIf="ticketForm.get('assetId')?.pending" class="absolute right-3 top-2.5">
+            <span class="animate-spin block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></span>
+          </div>
+        </div>
+        
+        <p *ngIf="ticketForm.get('assetId')?.hasError('assetNotFound')" class="text-red-500 text-xs mt-1 font-semibold">
+          Error: Asset ID not found in inventory!
+        </p>
+        <p *ngIf="ticketForm.get('assetId')?.hasError('required') && ticketForm.get('assetId')?.touched" class="text-red-500 text-xs mt-1">
+          Asset ID is required for hardware issues.
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Detailed Description</label>
+        <textarea 
+          formControlName="description" 
+          rows="4"
+          placeholder="Please describe exactly what is happening..."
+          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition resize-none"
+          [class.border-red-500]="ticketForm.get('description')?.invalid && ticketForm.get('description')?.touched"
+        ></textarea>
+      </div>
+
+      <div formArrayName="stepsToReproduce" class="pt-4 border-t border-gray-100">
+        <label class="block text-sm font-semibold text-gray-700 mb-3">Steps to Reproduce (Optional)</label>
+        
+        <div class="space-y-3">
+          <div *ngFor="let step of steps.controls; let i=index" class="flex items-center gap-3">
+            <span class="text-sm font-bold text-gray-400 w-5">{{ i + 1 }}.</span>
+            <input 
+              [formControlName]="i" 
+              placeholder="e.g. Open the application"
+              class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+            >
+            <button 
+              type="button" 
+              (click)="removeStep(i)" 
+              [disabled]="steps.length === 1"
+              class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="button" (click)="addStep()" class="mt-3 text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          Add another step
+        </button>
+      </div>
+
+      <div class="pt-6 border-t border-gray-100 flex justify-end">
+        <button 
+          type="submit" 
+          [disabled]="ticketForm.invalid || isSubmitting"
+          class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center min-w-[160px] shadow-md">
+          <span *ngIf="isSubmitting" class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"></span>
+          {{ isSubmitting ? 'Submitting...' : 'Submit Ticket' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

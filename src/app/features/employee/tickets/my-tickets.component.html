@@ -1,0 +1,104 @@
+<!-- <div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">My Support Tickets</h1>
+    <a routerLink="/employee/tickets/new" class="bg-blue-600 text-white px-4 py-2 rounded">+ New Ticket</a>
+  </div>
+
+  <div class="mb-4">
+    <input 
+      [formControl]="searchControl"
+      type="text" 
+      placeholder="Search tickets by title or status..." 
+      class="w-full p-2 border rounded shadow-sm focus:ring-2 focus:ring-blue-500"
+    >
+  </div>
+
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <table class="w-full text-left border-collapse">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="p-4 border-b">ID</th>
+          <th class="p-4 border-b">Title</th>
+          <th class="p-4 border-b">Status</th>
+          <th class="p-4 border-b">Created At</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ticket of tickets$ | async" class="hover:bg-gray-50 transition">
+          <td class="p-4 border-b">#{{ ticket.id }}</td>
+          <td class="p-4 border-b font-medium">{{ ticket.title }}</td>
+          <td class="p-4 border-b">
+            <span [ngClass]="getStatusClass(ticket.status)" class="px-2 py-1 rounded-full text-xs">
+              {{ ticket.status }}
+            </span>
+          </td>
+          <td class="p-4 border-b text-gray-500 text-sm">
+            {{ ticket.createdAt | date:'mediumDate' }}
+          </td>
+        </tr>
+        
+        <tr *ngIf="(tickets$ | async)?.length === 0">
+          <td colspan="4" class="p-10 text-center text-gray-400">
+            No tickets found. Try a different search term.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> -->
+
+
+
+<div class="p-6 max-w-6xl mx-auto">
+  
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">My Support Tickets</h1>
+    <a routerLink="/employee/tickets/new" 
+       class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition">
+      + New Ticket
+    </a>
+  </div>
+
+  <div class="mb-6">
+    <input 
+      [formControl]="searchControl"
+      type="text" 
+      placeholder="Search tickets by title..." 
+      class="w-full md:w-1/2 p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+  </div>
+
+  <div class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+    <table class="min-w-full text-left border-collapse">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="p-4 text-sm font-semibold text-gray-600">Ticket ID</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Title</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Status</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Created At</th>
+        </tr>
+      </thead>
+      
+      <tbody class="divide-y divide-gray-200">
+        <tr *ngFor="let ticket of tickets$ | async" class="hover:bg-gray-50 transition">
+          <td class="p-4 text-gray-700 font-medium">#{{ ticket.id }}</td>
+          <td class="p-4 text-gray-700">{{ ticket.title }}</td>
+          <td class="p-4">
+            <span [ngClass]="getStatusClass(ticket.status)" class="px-3 py-1 rounded-full text-xs font-semibold">
+              {{ ticket.status }}
+            </span>
+          </td>
+          <td class="p-4 text-gray-500 text-sm">
+            {{ ticket.createdAt | date:'medium' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="(tickets$ | async)?.length === 0" class="p-10 text-center text-gray-500">
+      <p class="mb-2 text-lg">No tickets found.</p>
+      <p class="text-sm">Try adjusting your search or create a new ticket.</p>
+    </div>
+  </div>
+
+</div>

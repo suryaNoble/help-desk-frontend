@@ -1,0 +1,55 @@
+<div class="p-6 max-w-5xl mx-auto">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Return Assigned Assets</h1>
+    <p class="text-gray-500">View hardware currently assigned to users and return them to the inventory pool.</p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+    <table class="min-w-full text-left border-collapse">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="p-4 text-sm font-semibold text-gray-600">Asset ID</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Name / Serial</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Category</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Action</th>
+        </tr>
+      </thead>
+      
+      <tbody class="divide-y divide-gray-200" *ngIf="!isLoading">
+        <tr *ngFor="let asset of assignedAssets" class="hover:bg-gray-50 transition">
+          
+          <td class="p-4 font-bold text-gray-700">#{{ asset.id }}</td>
+          
+          <td class="p-4">
+            <div class="font-medium text-gray-800">{{ asset.name }}</div>
+            <div class="text-xs text-gray-500 font-mono">SN: {{ asset.serialNumber }}</div>
+          </td>
+          
+          <td class="p-4 text-gray-600 text-sm">
+            {{ asset.category?.name || 'Hardware' }}
+          </td>
+          
+          <td class="p-4">
+            <button 
+              (click)="onReturn(asset.id, asset.name)"
+              class="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold py-2 px-4 rounded transition shadow-sm">
+              Return to Inventory
+            </button>
+          </td>
+
+        </tr>
+        
+        <tr *ngIf="assignedAssets.length === 0">
+          <td colspan="4" class="p-10 text-center text-gray-500">
+            There are no assigned assets to return right now.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="isLoading" class="p-10 text-center text-gray-500">
+      <div class="animate-spin inline-block w-6 h-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading"></div>
+      <p class="mt-2">Loading assigned assets...</p>
+    </div>
+  </div>
+</div>

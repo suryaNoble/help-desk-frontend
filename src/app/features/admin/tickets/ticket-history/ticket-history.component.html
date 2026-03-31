@@ -1,0 +1,53 @@
+<div class="p-6 max-w-7xl mx-auto">
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">Global Ticket History</h1>
+    <p class="text-gray-500">A complete audit log of all ticket status changes across the system.</p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow overflow-x-auto border border-gray-200">
+    <table class="min-w-full text-left border-collapse">
+      <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th class="p-4 text-sm font-semibold text-gray-600">Ticket ID</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Title</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Created By</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Status</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Changed At</th>
+          <th class="p-4 text-sm font-semibold text-gray-600">Changed By</th>
+        </tr>
+      </thead>
+      
+      <tbody class="divide-y divide-gray-200">
+        <tr *ngFor="let log of historyLogs$ | async" class="hover:bg-gray-50 transition">
+          
+          <td class="p-4 text-gray-700 font-bold">#{{ log.ticket?.id }}</td>
+          
+          <td class="p-4 text-gray-700">{{ log.ticket?.title }}</td>
+
+          <td class="p-4 text-gray-700 text-sm">
+            {{ log.ticket?.createdBy?.name || 'Unknown User' }}
+          </td>
+          
+          <td class="p-4">
+            <span [ngClass]="getStatusClass(log.status)" class="px-3 py-1 rounded-full text-xs font-semibold">
+              {{ parseStatus(log.status) }}
+            </span>
+          </td>
+          
+          <td class="p-4 text-gray-500 text-sm">
+            {{ (log.changedAt || log.ticket?.createdAt) | date:'medium' }}
+          </td>
+
+          <td class="p-4 text-gray-600 text-sm">
+            {{ log.changedBy?.name || 'System / Unassigned' }}
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="(historyLogs$ | async)?.length === 0" class="p-10 text-center text-gray-500">
+      <p class="mb-2 text-lg">No history logs found.</p>
+    </div>
+  </div>
+</div>
